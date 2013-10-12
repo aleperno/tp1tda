@@ -1,0 +1,10 @@
+Para clonar el repositorio entero:
+git clone git@github:aleperno/tpitda.git
+
+Para descargar los cambios:
+git pull
+
+Para subir los cambios:
+git add * (añade todos los archivos)
+git commit -m "mensaje" (poner un mensaje o detalle del commit)
+git push -u origin master
