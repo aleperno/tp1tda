@@ -35,6 +35,9 @@ def loadGraph():
 def main():
 	g = loadGraph()
 	print g
+	
+	for i in g.getAllVertex():
+		print i,g.getAllNeighbours(i)
 
 if __name__ == '__main__':
 	main()

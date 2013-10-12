@@ -61,14 +61,16 @@ class Graph:
 		return self.graph.has_key(vertex.value)
 
 	def getAllVertex(self):
+		#Returns all the keys
 		return self.graph.keys()
 
 	def getAllNeighbours(self,vertex):
-		if not self.isVertex(vertex):
-			print "Error, vertex does not belong to graph"
+		#Returns dictionary containing all the neighbours of the vertex
+		try:
+			return self.graph[vertex]
+		except KeyError:
+			#Vertex not found in graph
 			return False
-		else:
-			return self.graph[vertex.value]
 
 	def addEdge(self, edge):
 		#First checks if there is vertex exists
