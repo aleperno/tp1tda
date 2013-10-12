@@ -15,7 +15,7 @@ class Edge:
 	def __init__(self, vertex1, vertex2):
 		self.vertex1 = vertex1
 		self.vertex2 = vertex2
-		self.label = 5
+		self.label = ''
 	
 	def __str__(self):
 		s = "%s <-> %s " % (self.vertex1, self.vertex2)
@@ -59,6 +59,16 @@ class Graph:
 
 	def isVertex(self, vertex):
 		return self.graph.has_key(vertex.value)
+
+	def getAllVertex(self):
+		return self.graph.keys()
+
+	def getAllNeighbours(self,vertex):
+		if not self.isVertex(vertex):
+			print "Error, vertex does not belong to graph"
+			return False
+		else:
+			return self.graph[vertex.value]
 
 	def addEdge(self, edge):
 		#First checks if there is vertex exists
