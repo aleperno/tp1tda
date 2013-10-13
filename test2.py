@@ -30,10 +30,12 @@ def loadGraph():
 		usage()
 	except IOError:
 		print "Verify parameters"
-
+	return False
 
 def main():
 	g = loadGraph()
+	if not g:
+		return
 	print g
 	
 	for i in g.getAllVertex():
