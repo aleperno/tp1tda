@@ -23,69 +23,101 @@ class Edge:
 
 class Vertex:
 
-	def __init__(self, value):
-		self.value = value
+	def __init__(self, key):
+		self.key = key
+
+		#To ve used on DFS
+		self.father = None
+		self.visited = False
+
+	def __eq__(self,other):
+		return self.key == other.key
 
 	def __str__(self):
-		return self.value
+		return self.key
 
+	def isVisited(self):
+		return self.visited
+
+	def visit(self):
+		print "Visitando %s" % self.key
+		self.visited=True
 
 class Graph:
 
 	def __init__(self):
 		#Standalone initialization
-		self.graph = {}
+		self.vertices = {}
+		self.adjacencies = {}
+
 
 	def __str__(self):
 		#Prints graph as 'vertex: [edges]'
-		s = ''
-		for i in self.graph.keys():
-			s += "%s: " % i
-			for j in self.graph[i].keys():
-				s += "%s," % j
+		s=''
+		for v in self.vertices.keys():
+			#First character on the line is the vertex
+			s += "%s: " % v
+			for a in self.adjacencies[v]:
+				s += "%s," % a
 			s += "\n"
 		return s
 
-	def addVertex(self, vertex):
-		self.graph[vertex.value] = {}
+	def isVertex(self, vertex):
+		return self.vertices.has_key(vertex.key)
 
-	def delVertex(self, vertex):
-		try:
-			self.graph.pop(vertex.value)
+	def addVertex(self, vertex):
+		if not self.isVertex(vertex):
+			self.vertices[vertex.key] = vertex
+			self.adjacencies[vertex.key] = []
 			return True
-		except KeyError:
-			#Vertex not in graph
+		else:
+			print "Vertex already exists"
 			return False
 
-	def isVertex(self, vertex):
-		return self.graph.has_key(vertex.value)
+	def delVertex(self, vertex):
+		if self.isVertex(vertex):
+			self.vertices.pop(vertex.key)
+			self.adjacencies.pop(vertex.key)
+
+			#Now I must delete all adjacencies references to the vertex
+			for lin in self.adjacencies.values():
+				try:
+					l.remove(vertex)
+				except ValueError:
+					#DoNothing
+				 	continue
 
 	def getAllVertex(self):
 		#Returns all the keys
-		return self.graph.keys()
+		return self.vertices.values()
 
 	def getAllNeighbours(self,vertex):
-		#Returns dictionary containing all the neighbours of the vertex
-		try:
-			return self.graph[vertex]
-		except KeyError:
-			#Vertex not found in graph
+		#Returns list containing all the neighbours of the vertex
+		if self.isVertex(vertex):
+			return self.adjacencies[vertex.key]
+		else:
+			print "vertex not in grahp"
 			return False
 
-	def addEdge(self, edge):
-		#First checks if there is vertex exists
-		try:
-			""" Could have asked isVertex but this is fastest (one less step), 
-				if the keys	does not exists it fails, otherwise it adds the edge
-			"""
-			self.graph[edge.vertex1.value][edge.vertex2.value] = edge.label
-			self.graph[edge.vertex2.value][edge.vertex1.value] = edge.label
-			#Crossing values so the graph stays undirected
+	def addAdjacency(self, vertex, adj):
+		#Checks if it isnt already a adjacency.
+		a = self.vertices[adj.key]
+		if a not in self.adjacencies[vertex.key]:
+			self.adjacencies[vertex.key].append(a)
 			return True
-		except KeyError:
-			#Either vertex not in graph
-			print "Error while adding edge"
+		else:
 			return False
+
+	def addEdge(self, vertex1, vertex2):
+		#First checks if there is vertex exists
+		if (self.isVertex(vertex1) and self.isVertex(vertex2)):
+			#As the intended graph is undirected, A>B and B>A should be made.
+			self.addAdjacency(vertex1,vertex2)
+			self.addAdjacency(vertex2,vertex1)
+			return True
+		else:
+			return False
+
 
 	def delEdge(self, vertex1, vertex2):
 		#As it is undirected, both references must be deleted
@@ -97,3 +129,35 @@ class Graph:
 			#Either vertex not in graph or no edge
 			print "Error while deleting edge"
 			return False
+
+
+	def idfs(self):
+		count = 0
+		heap = []
+		l=[]
+		sets=[]
+		#Will start on the first vertex
+		v=self.getAllVertex()[0]
+		v.visit()
+		l.append(a)
+		for a in self.adjacencies[v.key]:
+			heap.append(a)
+		while not len(heap)==0:
+			t = heap.pop()
+			if not t.isVisited():
+				t.visit()
+				for a in self.adjacencies[t.key]:
+					heap.append(a)
+
+	def rdfs(self):
+		
+		for vert in self.getAllVertex():
+			if not vert.isVisited():
+				self.dfsvisit(vert)
+				l.append(vert.key)
+
+	def dfsvisit(self,vert):
+		vert.visit()
+		for vecino in self.adjacencies[vert.key]:
+			if not vecino.isVisited():
+				self.dfsvisit(vecino)

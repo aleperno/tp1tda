@@ -20,8 +20,7 @@ def loadGraph():
 				v2 = Vertex(line[n])
 				if (not graph.isVertex(v2)):
 					graph.addVertex(v2)
-				e = Edge(v1,v2)
-				graph.addEdge(e)
+				graph.addEdge(v1,v2)
 		return graph
 
 	except KeyError:
@@ -37,9 +36,8 @@ def main():
 	if not g:
 		return
 	print g
-	
-	for i in g.getAllVertex():
-		print i,g.getAllNeighbours(i)
+	print "probando dfs\n"
+	g.rdfs()
 
 if __name__ == '__main__':
 	main()
