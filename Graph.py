@@ -7,7 +7,6 @@ Medrano, Lautaro
 Pernin, Alejandro
 """
 
-import re
 import heapq
 
 class Edge:
@@ -26,7 +25,7 @@ class Vertex:
 	def __init__(self, key):
 		self.key = key
 
-		#To ve used on DFS
+		#To be used on DFS
 		self.father = None
 		self.visited = False
 
@@ -53,7 +52,7 @@ class Graph:
 
 	def __str__(self):
 		#Prints graph as 'vertex: [edges]'
-		s=''
+		s = ''
 		for v in self.vertices.keys():
 			#First character on the line is the vertex
 			s += "%s: " % v
@@ -91,7 +90,7 @@ class Graph:
 		#Returns all the keys
 		return self.vertices.values()
 
-	def getAllNeighbours(self,vertex):
+	def getAllNeighbours(self, vertex):
 		#Returns list containing all the neighbours of the vertex
 		if self.isVertex(vertex):
 			return self.adjacencies[vertex.key]
@@ -149,8 +148,7 @@ class Graph:
 				for a in self.adjacencies[t.key]:
 					heap.append(a)
 
-	def rdfs(self):
-		
+	def rdfs(self):		
 		for vert in self.getAllVertex():
 			if not vert.isVisited():
 				self.dfsvisit(vert)
@@ -161,3 +159,62 @@ class Graph:
 		for vecino in self.adjacencies[vert.key]:
 			if not vecino.isVisited():
 				self.dfsvisit(vecino)
+
+	""" ALGORITMO PARA CFC: 
+		1) Marcar v como visitado con orden T
+		   Incrementar T
+		2) Apilar el vértice en las pilas stack1, stack2
+		3) Para cada vértice w vecino de v:
+			- Si no fue visitado, visitarlo DFS_CFC(w)
+			- Sino, si no está en una CFC:
+				- Desapilar de stack1 hasta que el tope tenga orden menor o igual al de w
+		4) Si v es el tope de stack1:
+			- Desapilar de stack2, hasta v y agregarlos a una nueva CFC
+			- Desapilar v de stack1	"""
+				
+	def dfs_cfc(vertex, time, stack1, stack2, cfcs):
+		vertex.order = time
+		time += 1
+		
+		stack1.push(vertex)
+		stack2.push(vertex)
+		
+		for w in self.adjacencies[vertex.key]:
+			if not w.order:
+				time = dfs_cfc(w, tiempo, stack1, stack2, cfcs)
+			elif not w.cfc:
+				while stack1.top().order > w.order:
+					stack1.pop()
+			
+			if stack1.top() == vertex:
+				cfc = []
+				
+				while true:
+					z = stack2.pop()
+					z.cfc = true
+					cfc.append(z)
+					
+					if z == vertex:
+						break
+						
+				stack1.pop()
+				cfcs.append(cfc)
+			
+		return tiempo
+				
+	def buscar_cfc(self):
+		for vertex in self.getAllVertex():
+			vertex.cfc = false
+			vertex.order = 0
+			
+		stack1 = stack()
+		stack2 = stack()
+		
+		cfcs = []
+		time = 1
+		
+		for vertex in self.getAllVertex():
+			if not vertex.order:
+				time = dfs_cfc(vertex, time, stack1, stack2, cfcs)
+				
+		return cfcs
