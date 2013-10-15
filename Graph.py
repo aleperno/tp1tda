@@ -200,14 +200,14 @@ class Graph:
 			if not w.order:
 				time = self.dfs_cfc(w, time, stack1, stack2, cfcs)
 			elif not w.cfc:
-				while stack1.top().order > w.order:
-					stack1.pop()
+				while stack2.top().order > w.order:
+					stack2.pop()
 			
-			if stack1.top() == vertex:
+			if stack2.top() == vertex:
 				cfc = []
 				
 				while True:
-					z = stack2.pop()
+					z = stack1.pop()
 					if not z:
 						break
 					z.cfc = True
@@ -216,7 +216,7 @@ class Graph:
 					if z == vertex:
 						break
 						
-				stack1.pop()
+				stack2.pop()
 				cfcs.append(cfc)
 			
 		return time
