@@ -9,6 +9,19 @@ Pernin, Alejandro
 
 import heapq
 
+class stack(list):
+
+	def pop(self):
+		heapq.heappop(self)
+
+	def push(self,element):
+		heapq.heappush(self,element)
+
+	def top(self):
+		aux = heapq.heappop(self)
+		heapq.heappush(self,aux)
+		return aux
+
 class Edge:
 
 	def __init__(self, vertex1, vertex2):
@@ -28,6 +41,10 @@ class Vertex:
 		#To be used on DFS
 		self.father = None
 		self.visited = False
+
+		#To be used on CFC
+		self.cnc = None
+		self.order = None
 
 	def __eq__(self,other):
 		return self.key == other.key
@@ -163,16 +180,16 @@ class Graph:
 	""" ALGORITMO PARA CFC: 
 		1) Marcar v como visitado con orden T
 		   Incrementar T
-		2) Apilar el vértice en las pilas stack1, stack2
-		3) Para cada vértice w vecino de v:
+		2) Apilar el vertice en las pilas stack1, stack2
+		3) Para cada vertice w vecino de v:
 			- Si no fue visitado, visitarlo DFS_CFC(w)
-			- Sino, si no está en una CFC:
+			- Sino, si no esta en una CFC:
 				- Desapilar de stack1 hasta que el tope tenga orden menor o igual al de w
 		4) Si v es el tope de stack1:
 			- Desapilar de stack2, hasta v y agregarlos a una nueva CFC
 			- Desapilar v de stack1	"""
 				
-	def dfs_cfc(vertex, time, stack1, stack2, cfcs):
+	def dfs_cfc(self, vertex, time, stack1, stack2, cfcs):
 		vertex.order = time
 		time += 1
 		
@@ -181,7 +198,7 @@ class Graph:
 		
 		for w in self.adjacencies[vertex.key]:
 			if not w.order:
-				time = dfs_cfc(w, tiempo, stack1, stack2, cfcs)
+				time = self.dfs_cfc(w, time, stack1, stack2, cfcs)
 			elif not w.cfc:
 				while stack1.top().order > w.order:
 					stack1.pop()
@@ -189,9 +206,11 @@ class Graph:
 			if stack1.top() == vertex:
 				cfc = []
 				
-				while true:
+				while True:
 					z = stack2.pop()
-					z.cfc = true
+					if not z:
+						break
+					z.cfc = True
 					cfc.append(z)
 					
 					if z == vertex:
@@ -200,11 +219,11 @@ class Graph:
 				stack1.pop()
 				cfcs.append(cfc)
 			
-		return tiempo
+		return time
 				
 	def buscar_cfc(self):
 		for vertex in self.getAllVertex():
-			vertex.cfc = false
+			vertex.cfc = False
 			vertex.order = 0
 			
 		stack1 = stack()
@@ -215,6 +234,6 @@ class Graph:
 		
 		for vertex in self.getAllVertex():
 			if not vertex.order:
-				time = dfs_cfc(vertex, time, stack1, stack2, cfcs)
+				time = self.dfs_cfc(vertex, time, stack1, stack2, cfcs)
 				
 		return cfcs
