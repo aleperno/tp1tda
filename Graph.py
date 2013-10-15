@@ -43,8 +43,8 @@ class Vertex:
 		self.visited = False
 
 		#To be used on CFC
-		self.cnc = None
-		self.order = None
+		self.cnc = True
+		self.order = 0
 
 	def __eq__(self,other):
 		return self.key == other.key
