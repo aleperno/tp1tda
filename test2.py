@@ -37,8 +37,8 @@ def main():
 		return
 	print g
 	print "probando dfs\n"
-	l = g.buscar_cfc()
-	print l
+	g.rdfs()
+	print g.comp
 
 if __name__ == '__main__':
 	main()

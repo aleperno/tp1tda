@@ -43,7 +43,7 @@ class Vertex:
 		self.visited = False
 
 		#To be used on CFC
-		self.cnc = True
+		self.cnc = False
 		self.order = 0
 
 	def __eq__(self,other):
@@ -55,9 +55,14 @@ class Vertex:
 	def isVisited(self):
 		return self.visited
 
-	def visit(self):
-		print "Visitando %s" % self.key
+	def visit(self,father):
+		if not father:
+			f=''
+		else:
+			f= father.key
+		print "Visitando %s desde %s" % (self.key, f)
 		self.visited=True
+		self.father=father
 
 class Graph:
 
@@ -66,6 +71,7 @@ class Graph:
 		self.vertices = {}
 		self.adjacencies = {}
 
+		self.comp = []
 
 	def __str__(self):
 		#Prints graph as 'vertex: [edges]'
@@ -147,93 +153,28 @@ class Graph:
 			return False
 
 
-	def idfs(self):
-		count = 0
-		heap = []
-		l=[]
-		sets=[]
-		#Will start on the first vertex
-		v=self.getAllVertex()[0]
-		v.visit()
-		l.append(a)
-		for a in self.adjacencies[v.key]:
-			heap.append(a)
-		while not len(heap)==0:
-			t = heap.pop()
-			if not t.isVisited():
-				t.visit()
-				for a in self.adjacencies[t.key]:
-					heap.append(a)
-
-	def rdfs(self):		
+	def rdfs(self):
+		l=[]	
 		for vert in self.getAllVertex():
 			if not vert.isVisited():
-				self.dfsvisit(vert)
-				l.append(vert.key)
+				self.dfsvisit(None,vert,l)
 
-	def dfsvisit(self,vert):
-		vert.visit()
+	def dfsvisit(self,father,vert,l):
+		vert.visit(father)
+		l.append(vert.key)
 		for vecino in self.adjacencies[vert.key]:
 			if not vecino.isVisited():
-				self.dfsvisit(vecino)
-
-	""" ALGORITMO PARA CFC: 
-		1) Marcar v como visitado con orden T
-		   Incrementar T
-		2) Apilar el vertice en las pilas stack1, stack2
-		3) Para cada vertice w vecino de v:
-			- Si no fue visitado, visitarlo DFS_CFC(w)
-			- Sino, si no esta en una CFC:
-				- Desapilar de stack1 hasta que el tope tenga orden menor o igual al de w
-		4) Si v es el tope de stack1:
-			- Desapilar de stack2, hasta v y agregarlos a una nueva CFC
-			- Desapilar v de stack1	"""
-				
-	def dfs_cfc(self, vertex, time, stack1, stack2, cfcs):
-		vertex.order = time
-		time += 1
-		
-		stack1.push(vertex)
-		stack2.push(vertex)
-		
-		for w in self.adjacencies[vertex.key]:
-			if not w.order:
-				time = self.dfs_cfc(w, time, stack1, stack2, cfcs)
-			elif not w.cfc:
-				while stack2.top().order > w.order:
-					stack2.pop()
-			
-			if stack2.top() == vertex:
-				cfc = []
-				
-				while True:
-					z = stack1.pop()
-					if not z:
+				self.dfsvisit(vert,vecino,l)
+			elif (vert.father != None) and (vert.father != vecino):
+				"""If the vertex's neighbour im trying to visit is already visited
+				and it is not the vertex's father, It means there I have reached a loop.
+				So I proceed to save the loop 
+				"""
+				aux = []
+				while len(l)>0:
+					v = l.pop()
+					aux.append(v)
+					if v == vecino.key:
 						break
-					z.cfc = True
-					cfc.append(z)
-					
-					if z == vertex:
-						break
-						
-				stack2.pop()
-				cfcs.append(cfc)
-			
-		return time
-				
-	def buscar_cfc(self):
-		for vertex in self.getAllVertex():
-			vertex.cfc = False
-			vertex.order = 0
-			
-		stack1 = stack()
-		stack2 = stack()
-		
-		cfcs = []
-		time = 1
-		
-		for vertex in self.getAllVertex():
-			if not vertex.order:
-				time = self.dfs_cfc(vertex, time, stack1, stack2, cfcs)
-				
-		return cfcs
+				if aux:
+					self.comp.append(aux)
