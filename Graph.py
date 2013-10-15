@@ -67,6 +67,10 @@ class Graph:
 		return s
 
 		#O(1)
+	def countVertices(self):
+		return len(self.getAllVertex())
+
+		#O(1)
 	def isVertex(self, vertex):
 		return self.vertices.has_key(vertex.key)
 
@@ -127,41 +131,55 @@ class Graph:
 		else:
 			return False
 
-
+		#O(1)
 	def delEdge(self, vertex1, vertex2):
 		#As it is undirected, both references must be deleted
 		try:
-			self.graph[vertex2.value].pop(vertex1.value)
-			self.graph[vertex1.value].pop(vertex2.value)
+			self.graph[vertex2.value].pop(vertex1.value) #O(1)
+			self.graph[vertex1.value].pop(vertex2.value) #O(1) 
 			return True
 		except KeyError:
 			#Either vertex not in graph or no edge
 			print "Error while deleting edge"
 			return False
 
-
+	"""
+	The common DFS running time is O(V+E) V:Vertices, E:Edges. ('Introduction to Algorithms' Second Edition -
+	Thomas Cormen page 543).
+	As I add a cycle over the list 'l', hence I only add a element when a vertex is being visited,
+	every call to the cycle will empty the list	and the operations inside the cycle are O(1) at the
+	whole DFS this cycle will add O(V).
+	Summing
+	O(V+E) + O(V) = O(V+V+E) = O(2V+E) = O(2V) + O(E) = 2O(V) + O(E) = O(V) + O(E) = O(V+E)
+	[O(kg)=O(g) if k is constant and nonzero]
+	"""
 	def rdfs(self):
 		l=[]	
-		for vert in self.getAllVertex():
+		for vert in self.getAllVertex(): #O(V)
 			if not vert.isVisited():
 				self.dfsvisit(None,vert,l)
 
 	def dfsvisit(self,father,vert,l):
-		vert.visit(father)
-		l.append(vert.key)
-		for vecino in self.adjacencies[vert.key]:
+		vert.visit(father) #O(1)
+		l.append(vert.key) #O(1)
+
+		"""At most I will go through every edge"""
+		for vecino in self.adjacencies[vert.key]: #O(E)
 			if not vecino.isVisited():
 				self.dfsvisit(vert,vecino,l)
-			elif (vert.father != None) and (vert.father != vecino):
+			elif (vert.father != None) and (vert.father != vecino): #O(1)
 				"""If the vertex's neighbour im trying to visit is already visited
 				and it is not the vertex's father, It means there I have reached a loop.
 				So I proceed to save the loop 
 				"""
 				aux = []
-				while len(l)>0:
-					v = l.pop()
-					aux.append(v)
-					if v == vecino.key:
+
+				"""As the only time a element is included in the list is when visited,
+				at most the list will include all the vertices"""
+				while len(l)>0: #O(V)
+					v = l.pop() #O(1)
+					aux.append(v) #O(1)
+					if v == vecino.key: #O(1)
 						break
 				if aux:
-					self.comp.append(aux)
+					self.comp.append(aux) #O(1)

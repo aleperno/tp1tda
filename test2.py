@@ -8,6 +8,17 @@ def usage():
 	print "Usage: python test.py #strenght <filename>"
 	print "Usage: ./test.py #strenght <filename>"
 
+def checkConditions(graph,strenght):
+	"""As the graph should be simple and connected, at the most
+	the graph will have #V*(#V-1)/2 edges (complete graph case)
+	"""
+	v=graph.countVertices()
+	maximo = (v*(v-1)/2)
+	if(int(strenght)>maximo):
+		print "No es posible la robustez pedida"
+		return False
+	return True
+
 def loadGraph():
 	graph = Graph()
 	try:
@@ -36,10 +47,12 @@ def main():
 	if not g:
 		return
 	#print g
-	print "Se requiere robustez %s" % sys.argv[1]
-	print "probando dfs\n"
-	g.rdfs()
-	print g.comp
+	robustez = sys.argv[1]
+	print "Se requiere robustez %s" % robustez
+	if checkConditions(g,robustez):
+		print "probando dfs\n"
+		g.rdfs()
+		print g.comp
 
 if __name__ == '__main__':
 	main()
