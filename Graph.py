@@ -121,6 +121,14 @@ class Graph:
 			return False
 
 		#O(1)
+	def isEdge(self,vertex1,vertex2):
+		print "Chequeando adyacencia entre %s y %s" % (vertex1,vertex2)
+		if vertex1 in self.getAllNeighbours(vertex2):
+			return True
+		else:
+			return False
+
+		#O(1)
 	def addEdge(self, vertex1, vertex2):
 		#First checks if there is vertex exists
 		if (self.isVertex(vertex1) and self.isVertex(vertex2)): #O(1) 
@@ -161,7 +169,7 @@ class Graph:
 
 	def dfsvisit(self,father,vert,l):
 		vert.visit(father) #O(1)
-		l.append(vert.key) #O(1)
+		l.append(vert) #O(1)
 
 		"""At most I will go through every edge"""
 		for vecino in self.adjacencies[vert.key]: #O(E)
@@ -179,7 +187,32 @@ class Graph:
 				while len(l)>0: #O(V)
 					v = l.pop() #O(1)
 					aux.append(v) #O(1)
-					if v == vecino.key: #O(1)
+					if v.key == vecino.key: #O(1)
 						break
 				if aux:
 					self.comp.append(aux) #O(1)
+
+	def edgesInSets(self,set1,set2):
+		count=0
+		for i in set1:
+			for j in set2:
+				if self.isEdge(i,j):
+					count +=1
+		return count
+
+	def calcStrenght(self):
+		cant = len(self.comp)
+		res = 0
+		aux = {}
+		
+		for li in self.comp:
+			cont = 0
+			for lj in self.comp:
+				if li==lj:
+					continue
+				else:
+					cont += self.edgesInSets(li,lj)
+			if not res or cont < res:
+				res = cont
+		return res
+

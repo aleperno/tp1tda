@@ -52,7 +52,18 @@ def main():
 	if checkConditions(g,robustez):
 		print "probando dfs\n"
 		g.rdfs()
-		print g.comp
+		
+		for i in g.comp:
+			s = '['
+			for j in i:
+				s += "'%s'," % j.key
+			s += "]\n"
+			print s
+
+	print g.isEdge(g.comp[0][0],g.comp[1][0])
+	print g.edgesInSets(g.comp[0],g.comp[1])
+	print "PRONBANDOOOO"
+	print g.calcStrenght()
 
 if __name__ == '__main__':
 	main()
