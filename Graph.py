@@ -7,20 +7,6 @@ Medrano, Lautaro
 Pernin, Alejandro
 """
 
-import heapq
-
-class stack(list):
-
-	def pop(self):
-		heapq.heappop(self)
-
-	def push(self,element):
-		heapq.heappush(self,element)
-
-	def top(self):
-		aux = heapq.heappop(self)
-		heapq.heappush(self,aux)
-		return aux
 
 class Edge:
 
@@ -42,10 +28,6 @@ class Vertex:
 		self.father = None
 		self.visited = False
 
-		#To be used on CFC
-		self.cnc = False
-		self.order = 0
-
 	def __eq__(self,other):
 		return self.key == other.key
 
@@ -60,7 +42,7 @@ class Vertex:
 			f=''
 		else:
 			f= father.key
-		print "Visitando %s desde %s" % (self.key, f)
+		#print "Visitando %s desde %s" % (self.key, f)
 		self.visited=True
 		self.father=father
 
@@ -84,16 +66,17 @@ class Graph:
 			s += "\n"
 		return s
 
+		#O(1)
 	def isVertex(self, vertex):
 		return self.vertices.has_key(vertex.key)
 
+		#O(1)
 	def addVertex(self, vertex):
-		if not self.isVertex(vertex):
-			self.vertices[vertex.key] = vertex
-			self.adjacencies[vertex.key] = []
+		if not self.isVertex(vertex): #O(1)
+			self.vertices[vertex.key] = vertex #O(1)
+			self.adjacencies[vertex.key] = []  #O(1)
 			return True
 		else:
-			print "Vertex already exists"
 			return False
 
 	def delVertex(self, vertex):
@@ -109,33 +92,37 @@ class Graph:
 					#DoNothing
 				 	continue
 
+		#O(1)
 	def getAllVertex(self):
 		#Returns all the keys
 		return self.vertices.values()
 
+		#O(1)
 	def getAllNeighbours(self, vertex):
 		#Returns list containing all the neighbours of the vertex
-		if self.isVertex(vertex):
-			return self.adjacencies[vertex.key]
+		if self.isVertex(vertex): #O(1)
+			return self.adjacencies[vertex.key] #O(1)
 		else:
 			print "vertex not in grahp"
 			return False
 
+		#O(1)
 	def addAdjacency(self, vertex, adj):
 		#Checks if it isnt already a adjacency.
-		a = self.vertices[adj.key]
-		if a not in self.adjacencies[vertex.key]:
-			self.adjacencies[vertex.key].append(a)
+		a = self.vertices[adj.key] #O(1)
+		if a not in self.adjacencies[vertex.key]: #O(1)
+			self.adjacencies[vertex.key].append(a) #O(1)
 			return True
 		else:
 			return False
 
+		#O(1)
 	def addEdge(self, vertex1, vertex2):
 		#First checks if there is vertex exists
-		if (self.isVertex(vertex1) and self.isVertex(vertex2)):
+		if (self.isVertex(vertex1) and self.isVertex(vertex2)): #O(1) 
 			#As the intended graph is undirected, A>B and B>A should be made.
-			self.addAdjacency(vertex1,vertex2)
-			self.addAdjacency(vertex2,vertex1)
+			self.addAdjacency(vertex1,vertex2) #O(1)
+			self.addAdjacency(vertex2,vertex1) #O(1)
 			return True
 		else:
 			return False

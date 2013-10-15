@@ -5,13 +5,13 @@ import sys
 from Graph import *
 
 def usage():
-	print "Usage: python test.py <filename>"
-	print "Usage: ./test.py <filename>"
+	print "Usage: python test.py #strenght <filename>"
+	print "Usage: ./test.py #strenght <filename>"
 
 def loadGraph():
 	graph = Graph()
 	try:
-		aux = open(sys.argv[1])
+		aux = open(sys.argv[2])
 		for line in aux:
 			line = line.replace(':',',').replace('\n','').split(',')
 			v1 = Vertex(line[0])
@@ -28,14 +28,15 @@ def loadGraph():
 	except IndexError:
 		usage()
 	except IOError:
-		print "Verify parameters"
+		print "Verify parameters, input file does not exist"
 	return False
 
 def main():
 	g = loadGraph()
 	if not g:
 		return
-	print g
+	#print g
+	print "Se requiere robustez %s" % sys.argv[1]
 	print "probando dfs\n"
 	g.rdfs()
 	print g.comp
