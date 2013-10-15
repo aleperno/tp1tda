@@ -78,7 +78,7 @@ class Graph:
 	def addVertex(self, vertex):
 		if not self.isVertex(vertex): #O(1)
 			self.vertices[vertex.key] = vertex #O(1)
-			self.adjacencies[vertex.key] = []  #O(1)
+			self.adjacencies[vertex.key] = {} #O(1)
 			return True
 		else:
 			return False
@@ -103,9 +103,9 @@ class Graph:
 
 		#O(1)
 	def getAllNeighbours(self, vertex):
-		#Returns list containing all the neighbours of the vertex
+		#Returns list containing all the neighbours keys of the vertex
 		if self.isVertex(vertex): #O(1)
-			return self.adjacencies[vertex.key] #O(1)
+			return self.adjacencies[vertex.key].keys() #O(1)
 		else:
 			print "vertex not in grahp"
 			return False
@@ -114,8 +114,8 @@ class Graph:
 	def addAdjacency(self, vertex, adj):
 		#Checks if it isnt already a adjacency.
 		a = self.vertices[adj.key] #O(1)
-		if a not in self.adjacencies[vertex.key]: #O(1)
-			self.adjacencies[vertex.key].append(a) #O(1)
+		if not self.adjacencies[vertex.key].has_key(a.key): #O(1)
+			self.adjacencies[vertex.key][a.key]=None #O(1)
 			return True
 		else:
 			return False
@@ -123,7 +123,7 @@ class Graph:
 		#O(1)
 	def isEdge(self,vertex1,vertex2):
 		print "Chequeando adyacencia entre %s y %s" % (vertex1,vertex2)
-		if vertex1 in self.getAllNeighbours(vertex2):
+		if self.adjacencies[vertex2.key].has_key(vertex1.key):
 			return True
 		else:
 			return False
@@ -172,7 +172,8 @@ class Graph:
 		l.append(vert) #O(1)
 
 		"""At most I will go through every edge"""
-		for vecino in self.adjacencies[vert.key]: #O(E)
+		for key_vecino in self.getAllNeighbours(vert): #O(E)
+			vecino = self.vertices[key_vecino]
 			if not vecino.isVisited():
 				self.dfsvisit(vert,vecino,l)
 			elif (vert.father != None) and (vert.father != vecino): #O(1)

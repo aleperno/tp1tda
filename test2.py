@@ -60,7 +60,7 @@ def main():
 			s += "]\n"
 			print s
 
-	print g.isEdge(g.comp[0][0],g.comp[1][0])
+	print g.isEdge(g.comp[0][0],g.comp[0][1])
 	print g.edgesInSets(g.comp[0],g.comp[1])
 	print "PRONBANDOOOO"
 	print g.calcStrenght()
