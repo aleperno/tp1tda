@@ -7,7 +7,7 @@ Medrano, Lautaro
 Pernin, Alejandro
 """
 
-
+#NotUsed
 class Edge:
 
 	def __init__(self, vertex1, vertex2):
@@ -75,15 +75,15 @@ class Graph:
 			count += 1
 
 
-		#O(1)
+	#O(1)
 	def countVertices(self):
 		return len(self.getAllVertex())
 
-		#O(1)
+	#O(1)
 	def isVertex(self, vertex):
 		return self.vertices.has_key(vertex.key)
 
-		#O(1)
+	#O(1)
 	def addVertex(self, vertex):
 		if not self.isVertex(vertex): #O(1)
 			self.vertices[vertex.key] = vertex #O(1)
@@ -92,6 +92,7 @@ class Graph:
 		else:
 			return False
 
+	#NotUsed
 	def delVertex(self, vertex):
 		if self.isVertex(vertex):
 			self.vertices.pop(vertex.key)
@@ -105,12 +106,12 @@ class Graph:
 					#DoNothing
 				 	continue
 
-		#O(1)
+	#O(1)
 	def getAllVertex(self):
 		#Returns all the vertices
 		return self.vertices.values()
 
-		#O(1)
+	#O(1)
 	def getAllNeighbours(self, vertex):
 		#Returns list containing all the neighbours keys of the vertex
 		if self.isVertex(vertex): #O(1)
@@ -119,7 +120,7 @@ class Graph:
 			print "vertex not in grahp"
 			return False
 
-		#O(1)
+	#O(1)
 	def addAdjacency(self, vertex, adj):
 		#Checks if it isnt already a adjacency.
 		a = self.vertices[adj.key] #O(1)
@@ -129,15 +130,15 @@ class Graph:
 		else:
 			return False
 
-		#O(1)
+	#O(1)
 	def isEdge(self,vertex1,vertex2):
-		print "Chequeando adyacencia entre %s y %s" % (vertex1,vertex2)
+		#print "Chequeando adyacencia entre %s y %s" % (vertex1,vertex2)
 		if self.adjacencies[vertex2.key].has_key(vertex1.key): #O(1)
 			return True
 		else:
 			return False
 
-		#O(1)
+	#O(1)
 	def addEdge(self, vertex1, vertex2):
 		#First checks if there is vertex exists
 		if (self.isVertex(vertex1) and self.isVertex(vertex2)): #O(1) 
@@ -148,7 +149,7 @@ class Graph:
 		else:
 			return False
 
-		#O(1)
+	#O(1) NOT USED
 	def delEdge(self, vertex1, vertex2):
 		#As it is undirected, both references must be deleted
 		try:
@@ -258,10 +259,12 @@ class Graph:
 				self.addEdgesSets(laux,cant)
 
 		#Now analize the strenght from the vertex point of view:
-
+		print "ahora a analizar por vertices"
 		for vertex in self.getAllVertex():
 			ncount = len(self.getAllNeighbours(vertex))
+			print "El vertice %s tiene %s adyacentes" % (vertex, ncount)
 			if (ncount < svalue):
+				print "Debo agregar aristas"
 				#The vertex has less neighbours than the required strength
 				cant = svalue - ncount #Ammount of edges to be added
 				self.addEdgesVertex(vertex,cant) 

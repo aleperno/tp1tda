@@ -13,6 +13,7 @@ def checkConditions(graph,strenght):
 	the graph will have #V*(#V-1)/2 edges (complete graph case)
 	"""
 	v=graph.countVertices()
+	print "El grafo tiene %s vertices" % v
 	maximo = (v*(v-1)/2)
 	if(int(strenght)>maximo):
 		print "No es posible la robustez pedida"
@@ -46,7 +47,7 @@ def main():
 	g = loadGraph()
 	if not g:
 		return
-	#print g
+	print g
 	robustez = sys.argv[1]
 	print "Se requiere robustez %s" % robustez
 	if checkConditions(g,robustez):
@@ -65,6 +66,6 @@ def main():
 	print g.setStrenght(int(robustez))
 	print "ahora a imprimir el resultado"
 	g.printResult()
-	
+
 if __name__ == '__main__':
 	main()
