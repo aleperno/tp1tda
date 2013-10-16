@@ -29,6 +29,8 @@ def loadGraph():
 			v1 = Vertex(line[0])
 			graph.addVertex(v1)
 			for n in range(1,len(line)):
+				if not line[n]:
+					continue
 				v2 = Vertex(line[n])
 				if (not graph.isVertex(v2)):
 					graph.addVertex(v2)

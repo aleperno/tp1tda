@@ -1,47 +1,23 @@
 #!/bin/bash
 
-echo "Ejecutando pruebas automáticas"
-echo "################################"
-echo "#          Prueba1             #"
-echo "################################"
-./tdatp1.py 2 grafoej3
+count=1
 
+test(){
+echo "################################"
+echo "#          Prueba$count        #"
+echo "################################"
+
+./tdatp1.py $1 grafoej$2
+count=$((count+1))
 echo -e "Presione enter para la siguiente prueba\n"
 read opcion
+}
 
-echo "################################"
-echo "#          Prueba2             #"
-echo "################################"
-./tdatp1.py 4 grafoej3
+test 2 3
+test 4 3
+test 3 1
+test 40 1
+test 6 2 
+test 3 2
 
-echo  -e "Presione enter para la siguiente prueba\n"
-read opcion
-
-echo "################################"
-echo "#          Prueba3             #"
-echo "################################"
-./tdatp1.py 3 grafoej1
-
-echo -e "Presione enter para la siguiente prueba\n"
-read opcion
-
-echo "################################"
-echo "#          Prueba4             #"
-echo "################################"
-./tdatp1.py 40 grafoej1
-
-echo -e "Presione enter para la siguiente prueba\n"
-read opcion
-
-echo "################################"
-echo "#          Prueba5             #"
-echo "################################"
-./tdatp1.py 6 grafoej2
-
-echo -e "Presione enter para la siguiente prueba\n"
-read opcion
-
-echo "################################"
-echo "#          Prueba6             #"
-echo "################################"
-./tdatp1.py 3 grafoej2
+echo "No hay más pruebas"
