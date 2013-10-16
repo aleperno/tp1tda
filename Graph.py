@@ -204,7 +204,7 @@ class Graph:
 						break
 				if aux:
 					self.comp.append(aux) #O(1)
-
+	#O(cant)
 	def addEdgesSets(self,laux,cant):
 		for i in range(cant):
 			try:
@@ -217,6 +217,7 @@ class Graph:
 				#There are no more available edges to add
 				return
 
+	#O(cant)
 	def addEdgesVertex(self,vertex,cant):
 		for i in self.getAllVertex():
 			if not cant:
@@ -230,6 +231,7 @@ class Graph:
 				self.res.append(s)
 				cant -= 1
 
+	#O(|set1|*|set2|)
 	def edgesInSets(self,set1,set2,laux):
 		count=0
 		for i in set1:
@@ -238,35 +240,46 @@ class Graph:
 					count +=1
 				else:
 					#Saves the no-edges to be used if more edges are required
-					laux.append((i,j))
+					laux.append((i,j)) #O(1)
 		return count
 
+	"""O(V^2)+O(V^2) = O(V^2) """
 	def setStrenght(self,svalue):
 		cant = len(self.comp)
 		res = 0
 		aux = {}
 		#First analyze the strength from the set point of view (see report)
-		for li in self.comp:
+		"""
+		The worst case in terms of sets quantities is the best case in terms of sets size and
+		vice versa. The annlysis of each case resulted that each wors case has a O(V^2) running time.
+		quant * {quant * (size * size) + (size * (V-size))}
+		-Worst case in terms of quant, is when having the most ammount of loops, each loop has a 
+		minimum size of 3 vertices so, at most i'll have V/3 loops of size 3.
+		V/3 * {V/3 * (3 * 3) + (3 * V-3)} 
+		Applying O() properties, the running time is O(V^2)
+		-Worst case in terms of size, is when having two loops, each with half of the vertices.
+		2 * {2  (V/2 * V/2) + (V/2 * V/2)}
+		Applying O() properties, the running time is O(V^2)
+		"""
+		for li in self.comp: #Depends on sets quantity, O(|self.comp|)
 			cont = 0
 			laux = []
-			for lj in self.comp:
+			for lj in self.comp: # Depends on sets quantity, O(|self.comp|)
 				#See how many edges to other sets there are
 				if li==lj:
 					continue
 				else:
-					cont += self.edgesInSets(li,lj,laux)
+					cont += self.edgesInSets(li,lj,laux)#Depends on sets size,O(|li|*|lj|)
 			if cont < svalue:
 				#The set has less edges to other sets than the required strength
 				cant = svalue - cont #The required ammount of edges to be added to comply the requirements
-				self.addEdgesSets(laux,cant)
+				self.addEdgesSets(laux,cant) #Worst case O(|li|*V-|li|), for each vertex, add edge to all other vertex
 
+		"""Upper bound O(V^2)"""
 		#Now analize the strenght from the vertex point of view:
-		#print "ahora a analizar por vertices"
-		for vertex in self.getAllVertex():
-			ncount = len(self.getAllNeighbours(vertex))
-			#print "El vertice %s tiene %s adyacentes" % (vertex, ncount)
+		for vertex in self.getAllVertex(): #O(V)
+			ncount = len(self.getAllNeighbours(vertex)) #O(1)
 			if (ncount < svalue):
-				#print "Debo agregar aristas"
 				#The vertex has less neighbours than the required strength
 				cant = svalue - ncount #Ammount of edges to be added
-				self.addEdgesVertex(vertex,cant) 
+				self.addEdgesVertex(vertex,cant) #Worst case O(V-1) if i have to complete the graph 
