@@ -73,7 +73,9 @@ class Graph:
 		for line in self.res:
 			print "Arista%s: %s" % (count,line)
 			count += 1
-
+		if count == 1:
+			#There were no results
+			print "Ya se cumple la robustez requerida"
 
 	#O(1)
 	def countVertices(self):
@@ -259,12 +261,12 @@ class Graph:
 				self.addEdgesSets(laux,cant)
 
 		#Now analize the strenght from the vertex point of view:
-		print "ahora a analizar por vertices"
+		#print "ahora a analizar por vertices"
 		for vertex in self.getAllVertex():
 			ncount = len(self.getAllNeighbours(vertex))
-			print "El vertice %s tiene %s adyacentes" % (vertex, ncount)
+			#print "El vertice %s tiene %s adyacentes" % (vertex, ncount)
 			if (ncount < svalue):
-				print "Debo agregar aristas"
+				#print "Debo agregar aristas"
 				#The vertex has less neighbours than the required strength
 				cant = svalue - ncount #Ammount of edges to be added
 				self.addEdgesVertex(vertex,cant) 

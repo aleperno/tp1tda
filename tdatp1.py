@@ -10,13 +10,13 @@ def usage():
 
 def checkConditions(graph,strenght):
 	"""As the graph should be simple and connected, at the most
-	the graph will have #V*(#V-1)/2 edges (complete graph case)
+	each vertex on graph will have V-1 edges (complete graph case)
 	"""
+
 	v=graph.countVertices()
-	print "El grafo tiene %s vertices" % v
-	maximo = (v*(v-1)/2)
+	maximo = (v-1)
 	if(int(strenght)>maximo):
-		print "No es posible la robustez pedida"
+		print "No es posible la robustez pedida, el maximo es %s, ver condiciones" % maximo
 		return False
 	return True
 
@@ -44,6 +44,11 @@ def loadGraph():
 	return False
 
 def main():
+	print "Teoria y Algoritmos 1 - [75.29]"
+	print "TP1 - Robustez en Grafos"
+	print "Autores: Alejandro Pernin (92216) y Lautaro Medrano (90009)\n"
+
+	print "Grafo ingresado:\n"
 	g = loadGraph()
 	if not g:
 		return
@@ -51,20 +56,20 @@ def main():
 	robustez = sys.argv[1]
 	print "Se requiere robustez %s" % robustez
 	if checkConditions(g,robustez):
-		print "probando dfs\n"
+		#print "probando dfs\n"
 		g.rdfs()
 		
-		for i in g.comp:
-			s = '['
-			for j in i:
-				s += "'%s'," % j.key
-			s += "]\n"
-			print s
+#		for i in g.comp:
+#			s = '['
+#			for j in i:
+#				s += "'%s'," % j.key
+#			s += "]\n"
+#			print s
 	else:
 		return
 
-	print g.setStrenght(int(robustez))
-	print "ahora a imprimir el resultado"
+	g.setStrenght(int(robustez))
+	print "Resultado:"
 	g.printResult()
 
 if __name__ == '__main__':
