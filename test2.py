@@ -59,11 +59,12 @@ def main():
 				s += "'%s'," % j.key
 			s += "]\n"
 			print s
+	else:
+		return
 
-	print g.isEdge(g.comp[0][0],g.comp[0][1])
-	print g.edgesInSets(g.comp[0],g.comp[1])
-	print "PRONBANDOOOO"
-	print g.calcStrenght()
-
+	print g.setStrenght(int(robustez))
+	print "ahora a imprimir el resultado"
+	g.printResult()
+	
 if __name__ == '__main__':
 	main()

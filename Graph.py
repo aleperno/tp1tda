@@ -55,6 +55,8 @@ class Graph:
 
 		self.comp = []
 
+		self.res = []
+
 	def __str__(self):
 		#Prints graph as 'vertex: [edges]'
 		s = ''
@@ -65,6 +67,13 @@ class Graph:
 				s += "%s," % a
 			s += "\n"
 		return s
+
+	def printResult(self):
+		count = 1
+		for line in self.res:
+			print "Arista%s: %s" % (count,line)
+			count += 1
+
 
 		#O(1)
 	def countVertices(self):
@@ -98,7 +107,7 @@ class Graph:
 
 		#O(1)
 	def getAllVertex(self):
-		#Returns all the keys
+		#Returns all the vertices
 		return self.vertices.values()
 
 		#O(1)
@@ -123,7 +132,7 @@ class Graph:
 		#O(1)
 	def isEdge(self,vertex1,vertex2):
 		print "Chequeando adyacencia entre %s y %s" % (vertex1,vertex2)
-		if self.adjacencies[vertex2.key].has_key(vertex1.key):
+		if self.adjacencies[vertex2.key].has_key(vertex1.key): #O(1)
 			return True
 		else:
 			return False
@@ -193,27 +202,66 @@ class Graph:
 				if aux:
 					self.comp.append(aux) #O(1)
 
-	def edgesInSets(self,set1,set2):
+	def addEdgesSets(self,laux,cant):
+		for i in range(cant):
+			try:
+				v1 = laux[i][0]
+				v2 = laux[i][1]
+				self.addEdge(v1,v2)
+				s = "%s , %s" % (v1.key , v2.key)
+				self.res.append(s)
+			except IndexError:
+				#There are no more available edges to add
+				return
+
+	def addEdgesVertex(self,vertex,cant):
+		for i in self.getAllVertex():
+			if not cant:
+				#No edges to add
+				return
+			if i == vertex :
+				continue
+			elif not self.isEdge(vertex,i):
+				self.addEdge(vertex,i)
+				s = "%s , %s" % (vertex.key , i.key)
+				self.res.append(s)
+				cant -= 1
+
+	def edgesInSets(self,set1,set2,laux):
 		count=0
 		for i in set1:
 			for j in set2:
 				if self.isEdge(i,j):
 					count +=1
+				else:
+					#Saves the no-edges to be used if more edges are required
+					laux.append((i,j))
 		return count
 
-	def calcStrenght(self):
+	def setStrenght(self,svalue):
 		cant = len(self.comp)
 		res = 0
 		aux = {}
-		
+		#First analyze the strength from the set point of view (see report)
 		for li in self.comp:
 			cont = 0
+			laux = []
 			for lj in self.comp:
+				#See how many edges to other sets there are
 				if li==lj:
 					continue
 				else:
-					cont += self.edgesInSets(li,lj)
-			if not res or cont < res:
-				res = cont
-		return res
+					cont += self.edgesInSets(li,lj,laux)
+			if cont < svalue:
+				#The set has less edges to other sets than the required strength
+				cant = svalue - cont #The required ammount of edges to be added to comply the requirements
+				self.addEdgesSets(laux,cant)
 
+		#Now analize the strenght from the vertex point of view:
+
+		for vertex in self.getAllVertex():
+			ncount = len(self.getAllNeighbours(vertex))
+			if (ncount < svalue):
+				#The vertex has less neighbours than the required strength
+				cant = svalue - ncount #Ammount of edges to be added
+				self.addEdgesVertex(vertex,cant) 
